@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8">
+ <title>Lesson 12 - closure</title>
+</head>
+<body>
+
+	<script>
+		
+		//Задача 1
+		var dollar, getDollar;
+
+		(function (){
+			var dollar = 0;
+			getDollar = function () {
+				return dollar;
+			}
+		}());
+
+		dollar = 30;
+		console.log(getDollar()); // выведет 0, getDollar после самовызова функции переопределился и стал функцией, которая возвращает значение локальной переменной dollar. Т.к. локальная переменная dollar "закрыта" от глобального контекста, то когда dollar = 30 - это значение получила только глобальная переменная, а локальная осталась равна нулю. 
+
+		//Задача 2
+		// var greet = "Hello";
+		// (function (){
+		// 	var text = " World";
+		// 	console.log(greet + text); // Выведется в консоль - Hello World
+		// }());
+		// console.log(greet + text); // ошибка, переменная text вне зоны видимости
+
+		//Задача 3
+		var minus = function(firstNumber){
+			if (firstNumber == undefined) {
+				firstNumber = 0;
+			}
+			return function(secondNumber) {
+				if (secondNumber == undefined) {
+					secondNumber = 0;
+				}				
+				return firstNumber - secondNumber;}				
+		}
+		console.log("Задача на вычитание");
+		console.log(minus(10)(6));
+		console.log(minus(5)(6));
+		console.log(minus(10)());
+		console.log(minus()(6));
+		console.log(minus()());
+
+		//Задача 4
+		var multiplyMaker = function(res){
+			return function(number) {return res *= number;}				
+		}
+		const multiply = multiplyMaker(2);
+		console.log("Функция, которая умножает и запоминает результат между вызовами"); 
+		console.log(multiply(2)); // 4
+		console.log(multiply(1)); // 4 
+		console.log(multiply(3)); // 12
+		console.log(multiply(10)); //120
+
+
+		//Задача 5
+		var stringMaker = (function(){
+			var text = "";
+			function setString(getText){				
+				if (getText == "") {
+					text = "";
+				} else if (typeof(getText) == 'number'){
+					text = getText.toString();
+				} else {
+					text = getText;
+				}
+			};
+			
+			function getString () {
+				return text;
+			};
+			function getStringLength(){
+				return text.length;
+			};
+			function reverseString() {
+				var res = "";
+				for (i = getStringLength() - 1; i >= 0; i--){
+					res += getString()[i];
+				}	
+				return res;
+			};
+			return {
+			setString: setString,
+			getString: getString,
+			getStringLength: getStringLength,
+			reverseString: reverseString,
+			};
+		})();
+		stringMaker.setString('abcde');
+		console.log("Строка: " + stringMaker.getString()); // abcde
+		console.log("Длина строки: " + stringMaker.getStringLength()); // 5
+		console.log("Строка-перевертыш: " + stringMaker.reverseString()); // edcba
+
+	</script>
+
+
+</body>
+</html>
